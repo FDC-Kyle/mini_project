@@ -7,15 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		805D622C2C578C5A00DCF657 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805D622B2C578C5A00DCF657 /* CustomTabBarController.swift */; };
+		805D622E2C5794E600DCF657 /* WaitingDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805D622D2C5794E600DCF657 /* WaitingDetails.swift */; };
 		806166302C57654200C30492 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8061662F2C57654200C30492 /* AppDelegate.swift */; };
 		806166322C57654200C30492 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806166312C57654200C30492 /* SceneDelegate.swift */; };
 		806166342C57654200C30492 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806166332C57654200C30492 /* ViewController.swift */; };
 		806166372C57654200C30492 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 806166362C57654200C30492 /* Base */; };
 		806166392C57654400C30492 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 806166382C57654400C30492 /* Assets.xcassets */; };
 		8061663C2C57654400C30492 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 8061663B2C57654400C30492 /* Base */; };
+		80E614602C58A75F00B930A5 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E6145F2C58A75F00B930A5 /* CustomTableViewCell.swift */; };
+		80E614622C58B49E00B930A5 /* TeacherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E614612C58B49E00B930A5 /* TeacherModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		805D622B2C578C5A00DCF657 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
+		805D622D2C5794E600DCF657 /* WaitingDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingDetails.swift; sourceTree = "<group>"; };
 		8061662C2C57654200C30492 /* mini_project_1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mini_project_1.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8061662F2C57654200C30492 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		806166312C57654200C30492 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -24,6 +30,8 @@
 		806166382C57654400C30492 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8061663B2C57654400C30492 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8061663D2C57654400C30492 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		80E6145F2C58A75F00B930A5 /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
+		80E614612C58B49E00B930A5 /* TeacherModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,9 +68,13 @@
 				806166312C57654200C30492 /* SceneDelegate.swift */,
 				806166332C57654200C30492 /* ViewController.swift */,
 				806166352C57654200C30492 /* Main.storyboard */,
+				805D622D2C5794E600DCF657 /* WaitingDetails.swift */,
+				80E614612C58B49E00B930A5 /* TeacherModel.swift */,
 				806166382C57654400C30492 /* Assets.xcassets */,
 				8061663A2C57654400C30492 /* LaunchScreen.storyboard */,
 				8061663D2C57654400C30492 /* Info.plist */,
+				805D622B2C578C5A00DCF657 /* CustomTabBarController.swift */,
+				80E6145F2C58A75F00B930A5 /* CustomTableViewCell.swift */,
 			);
 			path = mini_project_1;
 			sourceTree = "<group>";
@@ -138,8 +150,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80E614622C58B49E00B930A5 /* TeacherModel.swift in Sources */,
+				80E614602C58A75F00B930A5 /* CustomTableViewCell.swift in Sources */,
+				805D622E2C5794E600DCF657 /* WaitingDetails.swift in Sources */,
 				806166342C57654200C30492 /* ViewController.swift in Sources */,
 				806166302C57654200C30492 /* AppDelegate.swift in Sources */,
+				805D622C2C578C5A00DCF657 /* CustomTabBarController.swift in Sources */,
 				806166322C57654200C30492 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
