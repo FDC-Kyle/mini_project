@@ -127,7 +127,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             
             print(selectedTeacher)
             
-            let waitingDetailView = WaitingDetails(teacher: selectedTeacher)
+            let waitingDetailView = WaitingDetails(teacher: selectedTeacher, allData: data)
             let host = UIHostingController(rootView: waitingDetailView)
             
             // Ensure we're pushing onto the navigation stack correctly

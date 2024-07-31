@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Teacher {
+struct Teacher: Identifiable {
     var id = UUID()
     let title: String
     let imageName: String

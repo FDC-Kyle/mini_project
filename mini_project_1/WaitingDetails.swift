@@ -9,14 +9,8 @@ import SwiftUI
 
 struct WaitingDetails: View {
     let data: [CGFloat] = [0.4, 0.6, 0.8, 3, 0.9]
-    let cardData: [(title: String, imageName: String)] = [
-            (title: "Card 1", imageName: "star.fill"),
-            (title: "Card 2", imageName: "heart.fill"),
-            (title: "Card 3", imageName: "bell.fill"),
-            (title: "Card 4", imageName: "bolt.fill"),
-            (title: "Card 5", imageName: "camera.fill")
-        ]
     var teacher: Teacher
+    var allData: [Teacher]
     var body: some View {
         ZStack {
             Color.black
@@ -24,32 +18,26 @@ struct WaitingDetails: View {
             
             ScrollView {
                 VStack {
-                    HeaderView()
-                    TeacherDetailView()
+                    HeaderView(teacher: teacher)
+                    TeacherDetailView(teacher: teacher)
                     ActionButtons()
                     TutorProfile()
                     FeatureHobbies()
                     WorkExpView()
                     BarChartView(data: data)
-                    VStack(alignment: .leading) {
-                        Text("Recommended tutors")
-                            .bold()
-                            .foregroundStyle(.white)
-                            .padding(.top, 10)
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 5) {
-                                ForEach(0..<10, id: \.self) { _ in
-                                    CardView(title: teacher.title, imageName: teacher.imageName)
-                                }
-                            }
-                        }.padding(.trailing, 40)
-                    }.padding(.leading,40)
+                    HorizontalScrollViewList(allData: allData)
                 }
                 .padding()
             }
         }
+        
+       
     }
+    init(teacher: Teacher, allData: [Teacher]) {
+            self.teacher = teacher
+            self.allData = allData
+        print(self.allData)
+        }
 }
 
 
@@ -65,12 +53,11 @@ struct CardView: View {
                 .aspectRatio(contentMode: .fit)
                 .background(Color.blue)
                 
-            VStack(alignment: .leading){
+            VStack(alignment: .leading) {
                 Text(title)
                     .font(.subheadline)
                     .foregroundStyle(.white)
-        
-                HStack(spacing: 3){
+                HStack(spacing: 3) {
                     Image("japan")
                         .resizable()
                         .frame(width: 15, height: 10)
@@ -78,7 +65,7 @@ struct CardView: View {
                         .foregroundStyle(.white)
                         .font(.caption2)
                 }
-                HStack(spacing: 3){
+                HStack(spacing: 3) {
                     Image(systemName: "book.closed")
                         .resizable()
                         .frame(width: 10, height: 10)
@@ -93,7 +80,7 @@ struct CardView: View {
                         .foregroundStyle(.white)
                         .font(.caption2)
                 }
-                HStack(spacing: 3){
+                HStack(spacing: 3) {
                     Image(systemName: "tv.fill")
                         .resizable()
                         .frame(width: 10, height: 10)
@@ -102,7 +89,7 @@ struct CardView: View {
                         .foregroundStyle(.white)
                         .font(.caption2)
                 }
-                HStack(spacing: 3){
+                HStack(spacing: 3) {
                     Image(systemName: "heart.fill")
                         .resizable()
                         .frame(width: 10, height: 10)
@@ -112,12 +99,13 @@ struct CardView: View {
                         .font(.caption2)
                 }
                 
-            }.padding(.leading, 10)
-                .padding(.bottom, 10)
+            }
+            .padding(.leading, 10)
+            .padding(.bottom, 10)
             Spacer()
         }
         .frame(width: 100, height: 200)
-        .background(Color.customColor)
+        .background(Color.customColor) // Ensure 'customColor' is defined in your extension or use a default color
         .cornerRadius(5)
     }
 }
@@ -161,6 +149,7 @@ struct BarChartView: View {
 }
 
 struct HeaderView: View {
+    var teacher: Teacher
     var body: some View {
         HStack(spacing: 150) {
             HStack(spacing:15){
@@ -168,7 +157,7 @@ struct HeaderView: View {
                     .padding(.leading, 20)
                     .foregroundStyle(.white)
                     .frame(width: 20)
-                Text("TeacherOne")
+                Text(teacher.title)
                     .bold()
                     .foregroundStyle(.white)
                 Text("(Age: 35)")
@@ -183,6 +172,29 @@ struct HeaderView: View {
         }
 
         
+    }
+}
+
+struct HorizontalScrollViewList: View {
+    var allData: [Teacher]
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("Recommended tutors")
+                .bold()
+                .foregroundStyle(.white)
+                .padding(.top, 10)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 5) {
+                    ForEach(allData) { teacher in
+                        CardView(title: teacher.title, imageName: teacher.imageName)
+                    }
+                }
+            }
+            .padding(.trailing, 40)
+        }
+        .padding(.leading, 40)
     }
 }
 
@@ -466,9 +478,11 @@ struct TutorProfile: View {
 }
 
 struct TeacherDetailView: View {
+
+    var teacher: Teacher
     var body: some View {
         HStack {
-            Image("teacher")
+            Image(teacher.imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 220, height: 380)
@@ -627,8 +641,11 @@ struct FooterButton: View {
 }
 extension Color {
     static let customColor = Color(red: 48/255, green: 44/255, blue: 44/255)}
-
+    
 
 #Preview {
-    WaitingDetails(teacher: Teacher(title: "John Doe", imageName: "bini"))
+    WaitingDetails(teacher: Teacher(title: "John Doe", imageName: "bini"), allData: [
+        Teacher(title: "John Doe", imageName: "bini"),
+        Teacher(title: "Jane Smith", imageName: "jane"),
+    ])
 }
