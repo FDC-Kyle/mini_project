@@ -14,8 +14,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        UserDefaults.standard.removeObject(forKey: "hasPresentedTabBar")
         return true
     }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+            // Clear UserDefaults here
+            UserDefaults.standard.removeObject(forKey: "hasPresentedTabBar")
+        }
 
     // MARK: UISceneSession Lifecycle
 

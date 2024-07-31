@@ -9,11 +9,8 @@ import UIKit
 import SwiftUI
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    
+
     @IBOutlet weak var tableView: UITableView!
-    
-    
-    
     let data: [Teacher] = [
         Teacher(title:"TeacherOne", imageName: "teacher"),
         Teacher(title:"TeacherCat", imageName: "cat"),
@@ -22,8 +19,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         Teacher(title:"TeacherOne", imageName: "teacher"),
         Teacher(title:"TeacherOne", imageName: "teacher")
     ]
+
     override func viewDidLoad() {
         super.viewDidLoad()
+   
+        guard tableView != nil else {
+            fatalError("TableView not connected or initialized.")
+        }
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -32,6 +34,77 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         
+    
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Check if tab bar controller has been presented before
+        if !UserDefaults.standard.bool(forKey: "hasPresentedTabBar") {
+            presentTabBarController()
+            UserDefaults.standard.set(true, forKey: "hasPresentedTabBar")
+        }
+    }
+
+    func presentTabBarController() {
+        let tabBarVc = UITabBarController()
+
+        // Create instances of your view controllers
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        guard let vc = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController else {
+            print("Failed to instantiate ViewController with identifier 'ViewController'.")
+            return
+        }
+        
+        // Wrap the ViewController in a UINavigationController
+        let navigationController = UINavigationController(rootViewController: vc)
+        navigationController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house")?.withRenderingMode(.alwaysTemplate), tag: 0)
+
+        // Create other view controllers
+        let vc1 = FirstViewController()
+        vc1.tabBarItem = UITabBarItem(title: "Favorite tutor", image: UIImage(systemName: "heart")?.withRenderingMode(.alwaysTemplate), tag: 1)
+
+        let vc2 = SecondViewController()
+        vc2.tabBarItem = UITabBarItem(title: "Textbook", image: UIImage(systemName: "book.closed")?.withRenderingMode(.alwaysTemplate), tag: 2)
+        
+        let vc3 = ThirdViewController()
+        vc3.tabBarItem = UITabBarItem(title: "Learning", image: UIImage(systemName: "pencil.line")?.withRenderingMode(.alwaysTemplate), tag: 3)
+
+        let vc4 = FourthViewController()
+        vc4.tabBarItem = UITabBarItem(title: "My Page", image: UIImage(systemName: "person")?.withRenderingMode(.alwaysTemplate), tag: 4)
+
+        tabBarVc.viewControllers = [navigationController, vc1, vc2, vc3, vc4]
+
+        // Customize the tab bar appearance
+        if #available(iOS 13.0, *) {
+            let appearance = UITabBarAppearance()
+            appearance.backgroundColor = UIColor.black // Tab bar background color
+            
+            // Configure item appearance for both normal and selected states
+            let itemAppearance = UITabBarItemAppearance()
+            itemAppearance.normal.iconColor = UIColor.gray // Color of unselected tab bar item images
+            itemAppearance.selected.iconColor = UIColor.white // Color of selected tab bar item images
+            itemAppearance.normal.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.gray] // Color of unselected tab bar item titles
+            itemAppearance.selected.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white] // Color of selected tab bar item title
+
+            appearance.stackedLayoutAppearance = itemAppearance
+            appearance.inlineLayoutAppearance = itemAppearance
+            appearance.compactInlineLayoutAppearance = itemAppearance
+            
+            tabBarVc.tabBar.standardAppearance = appearance
+            tabBarVc.tabBar.scrollEdgeAppearance = appearance
+        } else {
+            // Fallback on earlier versions
+            tabBarVc.tabBar.barTintColor = UIColor.black // Tab bar background color
+            tabBarVc.tabBar.tintColor = UIColor.white // Color of selected tab bar item image
+            tabBarVc.tabBar.unselectedItemTintColor = UIColor.gray // Color of unselected tab bar item image
+        }
+
+        // Present the tab bar controller
+        tabBarVc.modalPresentationStyle = .fullScreen
+        present(tabBarVc, animated: true)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -50,19 +123,23 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedTeacher = data[indexPath.row]
-        
-        print(selectedTeacher)
-        
-        let waitingDetailView = WaitingDetails(teacher: selectedTeacher)
-        let host = UIHostingController(rootView: waitingDetailView)
-        
-        if let navigationController = self.navigationController{
-            navigationController.pushViewController(host, animated: true)
-        } else {
-            print("error")
+            let selectedTeacher = data[indexPath.row]
+            
+            print(selectedTeacher)
+            
+            let waitingDetailView = WaitingDetails(teacher: selectedTeacher)
+            let host = UIHostingController(rootView: waitingDetailView)
+            
+            // Ensure we're pushing onto the navigation stack correctly
+            if let navController = self.navigationController {
+                navController.pushViewController(host, animated: true)
+            } else {
+                // Present modally if navigation controller is not available
+                let modalNavController = UINavigationController(rootViewController: host)
+                modalNavController.modalPresentationStyle = .formSheet
+                self.present(modalNavController, animated: true, completion: nil)
+            }
         }
-    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
@@ -76,5 +153,33 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 //        self.present(vc, animated: true)
 //    }
     
+}
+
+class FirstViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .purple
+    }
+}
+
+class SecondViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .black
+    }
+}
+
+class ThirdViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
+    }
+}
+
+class FourthViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .green
+    }
 }
 

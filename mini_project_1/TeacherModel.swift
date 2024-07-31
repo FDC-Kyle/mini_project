@@ -8,6 +8,7 @@
 import Foundation
 
 struct Teacher {
+    var id = UUID()
     let title: String
     let imageName: String
 }

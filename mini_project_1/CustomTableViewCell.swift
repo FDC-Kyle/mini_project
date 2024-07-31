@@ -10,12 +10,12 @@ import UIKit
 class CustomTableViewCell: UITableViewCell {
     
     @IBOutlet weak var iconImageView: UIImageView!
-    
+    @IBOutlet weak var forKids: UILabel!
     @IBOutlet weak var teacherName: UILabel!
     
     override func awakeFromNib() {
           super.awakeFromNib()
-
+        
           setupImageView()
       }
 
@@ -28,5 +28,6 @@ class CustomTableViewCell: UITableViewCell {
           let cornerRadius = iconImageView.frame.size.width / 8
           iconImageView.layer.cornerRadius = cornerRadius
           iconImageView.clipsToBounds = true
+          
       }
 }

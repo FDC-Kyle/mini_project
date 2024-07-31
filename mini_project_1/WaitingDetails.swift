@@ -8,7 +8,14 @@
 import SwiftUI
 
 struct WaitingDetails: View {
-    
+    let data: [CGFloat] = [0.4, 0.6, 0.8, 3, 0.9]
+    let cardData: [(title: String, imageName: String)] = [
+            (title: "Card 1", imageName: "star.fill"),
+            (title: "Card 2", imageName: "heart.fill"),
+            (title: "Card 3", imageName: "bell.fill"),
+            (title: "Card 4", imageName: "bolt.fill"),
+            (title: "Card 5", imageName: "camera.fill")
+        ]
     var teacher: Teacher
     var body: some View {
         ZStack {
@@ -22,51 +29,134 @@ struct WaitingDetails: View {
                     ActionButtons()
                     TutorProfile()
                     FeatureHobbies()
-                    VStack(alignment: .leading, spacing: 15){
-                        Text("work experience")
+                    WorkExpView()
+                    BarChartView(data: data)
+                    VStack(alignment: .leading) {
+                        Text("Recommended tutors")
                             .bold()
                             .foregroundStyle(.white)
                             .padding(.top, 10)
-                        VStack(alignment: .leading){
-                            Text("2016 - 07 - 01 - Current")
-                                .foregroundStyle(.white)
-                                .font(.caption2)
-                            Text("assessment")
-                                .foregroundStyle(.white)
-                                .font(.caption)
-                                .bold()
-                        }
-                        VStack(alignment: .leading){
-                            Text("2016 - 07 - 01 - 2016-06-01")
-                                .foregroundStyle(.white)
-                                .font(.caption2)
-                            Text("Teacher / Lecturer / Instructor")
-                                .foregroundStyle(.white)
-                                .font(.caption)
-                                .bold()
-                        }
-                        VStack(alignment: .leading){
-                            Text("2016 - 07 - 01 - 2016-06-01")
-                                .foregroundStyle(.white)
-                                .font(.caption2)
-                            Text("Teacher / Lecturer / Instructor")
-                                .foregroundStyle(.white)
-                                .font(.caption)
-                                .bold()
-                        }
                         
-                    }.padding(.trailing, 195)
-                    
-                    Text("Generation choosing this instructor")
-                        .foregroundStyle(.white)
-                        .bold()
-                        .foregroundStyle(.white)
-                    
-                    
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 5) {
+                                ForEach(0..<10, id: \.self) { _ in
+                                    CardView(title: teacher.title, imageName: teacher.imageName)
+                                }
+                            }
+                        }.padding(.trailing, 40)
+                    }.padding(.leading,40)
                 }
                 .padding()
             }
         }
+    }
+}
+
+
+struct CardView: View {
+    let title: String
+    let imageName: String
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Image(imageName)
+                .resizable()
+                .frame(width: 100, height: 100)
+                .aspectRatio(contentMode: .fit)
+                .background(Color.blue)
+                
+            VStack(alignment: .leading){
+                Text(title)
+                    .font(.subheadline)
+                    .foregroundStyle(.white)
+        
+                HStack(spacing: 3){
+                    Image("japan")
+                        .resizable()
+                        .frame(width: 15, height: 10)
+                    Text("Japan")
+                        .foregroundStyle(.white)
+                        .font(.caption2)
+                }
+                HStack(spacing: 3){
+                    Image(systemName: "book.closed")
+                        .resizable()
+                        .frame(width: 10, height: 10)
+                        .foregroundStyle(.white)
+                        .background(.blue)
+                    Image(systemName: "star.fill")
+                        .resizable()
+                        .frame(width: 10, height: 10)
+                        .foregroundStyle(.white)
+
+                    Text("5.00")
+                        .foregroundStyle(.white)
+                        .font(.caption2)
+                }
+                HStack(spacing: 3){
+                    Image(systemName: "tv.fill")
+                        .resizable()
+                        .frame(width: 10, height: 10)
+                        .foregroundStyle(.white)
+                    Text("96 times")
+                        .foregroundStyle(.white)
+                        .font(.caption2)
+                }
+                HStack(spacing: 3){
+                    Image(systemName: "heart.fill")
+                        .resizable()
+                        .frame(width: 10, height: 10)
+                        .foregroundStyle(.white)
+                    Text("127 people")
+                        .foregroundStyle(.white)
+                        .font(.caption2)
+                }
+                
+            }.padding(.leading, 10)
+                .padding(.bottom, 10)
+            Spacer()
+        }
+        .frame(width: 100, height: 200)
+        .background(Color.customColor)
+        .cornerRadius(5)
+    }
+}
+
+struct BarChartView: View {
+    let data: [CGFloat]
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+
+            Text("Generation choosing this instructor")
+                .foregroundStyle(.white)
+                .bold()
+            
+
+            ForEach(data.indices, id: \.self) { index in
+                HStack {
+                    Text("Item \(index + 1)")
+                        .foregroundStyle(.white)
+                    
+                    ZStack(alignment: .leading) {
+                        Rectangle()
+                            .frame(height: 10)
+                            .foregroundColor(Color.gray.opacity(0.3))
+                        
+                        Rectangle()
+                            .frame(width: self.data[index] * 20, height: 9)
+                            .foregroundColor(.white)
+                    }
+                    Text("Item \(index + 1)")
+                        .foregroundStyle(.white)
+                    
+                }
+
+            }
+        }
+        .frame(width: 350)
+        .padding(.top, 30)
+        .padding(.trailing, 20)
     }
 }
 
@@ -95,6 +185,48 @@ struct HeaderView: View {
         
     }
 }
+
+struct WorkExpView: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 15){
+            Text("work experience")
+                .bold()
+                .foregroundStyle(.white)
+                .padding(.top, 10)
+            VStack(alignment: .leading){
+                Text("2016 - 07 - 01 - Current")
+                    .foregroundStyle(.white)
+                    .font(.caption2)
+                Text("assessment")
+                    .foregroundStyle(.white)
+                    .font(.caption)
+                    .bold()
+            }
+            VStack(alignment: .leading){
+                Text("2016 - 07 - 01 - 2016-06-01")
+                    .foregroundStyle(.white)
+                    .font(.caption2)
+                Text("Teacher / Lecturer / Instructor")
+                    .foregroundStyle(.white)
+                    .font(.caption)
+                    .bold()
+            }
+            VStack(alignment: .leading){
+                Text("2016 - 07 - 01 - 2016-06-01")
+                    .foregroundStyle(.white)
+                    .font(.caption2)
+                Text("Teacher / Lecturer / Instructor")
+                    .foregroundStyle(.white)
+                    .font(.caption)
+                    .bold()
+            }
+            
+        }.padding(.trailing, 195)
+
+        
+    }
+}
+
 
 struct FeatureHobbies : View {
     var body: some View {
@@ -493,9 +625,10 @@ struct FooterButton: View {
             )
     }
 }
-
+extension Color {
+    static let customColor = Color(red: 48/255, green: 44/255, blue: 44/255)}
 
 
 #Preview {
-    WaitingDetails(teacher: Teacher(title: "John Doe", imageName: "teacher"))
+    WaitingDetails(teacher: Teacher(title: "John Doe", imageName: "bini"))
 }

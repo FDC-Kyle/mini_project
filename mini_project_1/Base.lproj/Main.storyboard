@@ -10,7 +10,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="mini_project_1" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ViewController" id="BYZ-38-t0r" customClass="ViewController" customModule="mini_project_1" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="1200"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -72,7 +72,7 @@
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rgX-rT-A8d">
-                                                                    <rect key="frame" x="15" y="19" width="80" height="80"/>
+                                                                    <rect key="frame" x="15" y="10" width="80" height="89"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" constant="80" id="Cwo-sI-9m3"/>
                                                                         <constraint firstAttribute="height" constant="80" id="obo-Ck-1wi"/>
@@ -173,14 +173,14 @@
                                                                     </subviews>
                                                                 </stackView>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="5WJ-dp-lsN">
-                                                                    <rect key="frame" x="366.33333333333331" y="33" width="20.666666666666686" height="43"/>
+                                                                    <rect key="frame" x="366.33333333333331" y="33" width="20.666666666666686" height="20"/>
                                                                     <subviews>
-                                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="heart" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="z6z-4L-XdI">
-                                                                            <rect key="frame" x="0.0" y="1.9999999999999982" width="20.666666666666668" height="25.666666666666671"/>
+                                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" ambiguous="YES" image="heart" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="z6z-4L-XdI">
+                                                                            <rect key="frame" x="0.0" y="1.9999999999999982" width="20.666666666666668" height="17"/>
                                                                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         </imageView>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="130" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jhR-k6-koB">
-                                                                            <rect key="frame" x="0.0" y="28.666666666666661" width="20.666666666666668" height="14.333333333333332"/>
+                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="130" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jhR-k6-koB">
+                                                                            <rect key="frame" x="0.0" y="20" width="20.666666666666668" height="0.0"/>
                                                                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -208,6 +208,7 @@
                                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <connections>
+                                                            <outlet property="forKids" destination="Dm2-n7-D8e" id="jK2-r6-954"/>
                                                             <outlet property="iconImageView" destination="rgX-rT-A8d" id="z80-26-6Ig"/>
                                                             <outlet property="teacherName" destination="xt6-ky-QhF" id="B7M-NK-it5"/>
                                                         </connections>
@@ -270,7 +271,7 @@
                     <navigationItem key="navigationItem" id="Xh8-BN-Bon"/>
                     <size key="freeformSize" width="393" height="1200"/>
                     <connections>
-                        <outlet property="tableView" destination="djH-LT-whF" id="gBG-Xn-EOp"/>
+                        <outlet property="tableView" destination="djH-LT-whF" id="V82-CH-GEH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
