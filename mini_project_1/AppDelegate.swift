@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillTerminate(_ application: UIApplication) {
             // Clear UserDefaults here
-            UserDefaults.standard.removeObject(forKey: "hasPresentedTabBar")
+//            UserDefaults.standard.removeObject(forKey: "hasPresentedTabBar")
         }
 
     // MARK: UISceneSession Lifecycle

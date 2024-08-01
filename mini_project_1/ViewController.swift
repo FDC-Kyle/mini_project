@@ -10,6 +10,8 @@ import SwiftUI
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    @IBOutlet weak var lessonDraw: UIStackView!
+    @IBOutlet weak var mainScrollView: UIScrollView!
     @IBOutlet weak var tableView: UITableView!
     let data: [Teacher] = [
         Teacher(title:"TeacherOne", imageName: "teacher"),
@@ -28,14 +30,25 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         tableView.dataSource = self
         tableView.delegate = self
+        mainScrollView.delegate = self
         
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.backgroundColor = .clear
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         
-    
+        lessonDraw.layer.cornerRadius = lessonDraw.frame.height / 2
+                lessonDraw.layer.masksToBounds = true
     }
+
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+            if scrollView == mainScrollView {
+                let xOffset = scrollView.contentOffset.x + 280
+                let yOffset = scrollView.contentOffset.y + 715
+                lessonDraw.frame.origin = CGPoint(x: xOffset, y: yOffset)
+            }
+        }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -87,7 +100,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             itemAppearance.normal.iconColor = UIColor.gray // Color of unselected tab bar item images
             itemAppearance.selected.iconColor = UIColor.white // Color of selected tab bar item images
             itemAppearance.normal.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.gray] // Color of unselected tab bar item titles
-            itemAppearance.selected.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white] // Color of selected tab bar item title
+            itemAppearance.selected.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
 
             appearance.stackedLayoutAppearance = itemAppearance
             appearance.inlineLayoutAppearance = itemAppearance
@@ -97,14 +110,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             tabBarVc.tabBar.scrollEdgeAppearance = appearance
         } else {
             // Fallback on earlier versions
-            tabBarVc.tabBar.barTintColor = UIColor.black // Tab bar background color
-            tabBarVc.tabBar.tintColor = UIColor.white // Color of selected tab bar item image
-            tabBarVc.tabBar.unselectedItemTintColor = UIColor.gray // Color of unselected tab bar item image
+            tabBarVc.tabBar.barTintColor = UIColor.black
+            tabBarVc.tabBar.tintColor = UIColor.white
+            tabBarVc.tabBar.unselectedItemTintColor = UIColor.gray
         }
 
         // Present the tab bar controller
         tabBarVc.modalPresentationStyle = .fullScreen
-        present(tabBarVc, animated: true)
+        present(tabBarVc, animated: false)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

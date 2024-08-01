@@ -50,7 +50,7 @@ struct CardView: View {
             Image(imageName)
                 .resizable()
                 .frame(width: 100, height: 100)
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
                 .background(Color.blue)
                 
             VStack(alignment: .leading) {
