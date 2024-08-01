@@ -11,4 +11,5 @@ struct Teacher: Identifiable {
     var id = UUID()
     let title: String
     let imageName: String
+    let status: String
 }

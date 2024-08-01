@@ -10,16 +10,17 @@ import SwiftUI
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    @IBOutlet weak var rankingScrollView: UIScrollView!
     @IBOutlet weak var lessonDraw: UIStackView!
     @IBOutlet weak var mainScrollView: UIScrollView!
     @IBOutlet weak var tableView: UITableView!
     let data: [Teacher] = [
-        Teacher(title:"TeacherOne", imageName: "teacher"),
-        Teacher(title:"TeacherCat", imageName: "cat"),
-        Teacher(title:"TeacherDOG", imageName: "dog"),
-        Teacher(title:"TeacherBini", imageName: "bini_2"),
-        Teacher(title:"TeacherOne", imageName: "teacher"),
-        Teacher(title:"TeacherOne", imageName: "teacher")
+        Teacher(title:"TeacherOne", imageName: "teacher", status: "busy"),
+        Teacher(title:"TeacherCat", imageName: "cat", status: "offline"),
+        Teacher(title:"TeacherDOG", imageName: "dog", status: "busy"),
+        Teacher(title:"TeacherBini", imageName: "bini_2", status: "busy"),
+        Teacher(title:"TeacherOne", imageName: "teacher", status: "offline"),
+        Teacher(title:"TeacherOne", imageName: "teacher", status: "offline")
     ]
 
     override func viewDidLoad() {
@@ -39,6 +40,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         lessonDraw.layer.cornerRadius = lessonDraw.frame.height / 2
                 lessonDraw.layer.masksToBounds = true
+        
+        populateRankingScrollView()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        populateRankingScrollView() // Recalculate sizes and positions on layout changes
     }
 
     
@@ -57,6 +65,52 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         if !UserDefaults.standard.bool(forKey: "hasPresentedTabBar") {
             presentTabBarController()
             UserDefaults.standard.set(true, forKey: "hasPresentedTabBar")
+        }
+    }
+    
+    func populateRankingScrollView() {
+        // Clear any existing subviews
+        rankingScrollView.subviews.forEach { $0.removeFromSuperview() }
+        
+        let padding: CGFloat = 10
+        let imageSize: CGFloat = 100
+        let totalWidth = CGFloat(data.count) * (imageSize + padding) + padding
+        
+        rankingScrollView.contentSize = CGSize(width: totalWidth, height: rankingScrollView.frame.height)
+        
+        for (index, teacher) in data.enumerated() {
+            let imageView = UIImageView(image: UIImage(named: teacher.imageName))
+            imageView.frame = CGRect(x: CGFloat(index) * (imageSize + padding) + padding,
+                                     y: 0,
+                                     width: imageSize,
+                                     height: imageSize)
+            imageView.contentMode = .scaleAspectFill
+            imageView.clipsToBounds = true
+            imageView.layer.cornerRadius = 5
+            imageView.isUserInteractionEnabled = true // Enable user interaction
+            
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageTap(_:)))
+            imageView.addGestureRecognizer(tapGesture)
+            imageView.tag = index
+            
+            rankingScrollView.addSubview(imageView)
+        }
+    }
+    
+    @objc func handleImageTap(_ sender: UITapGestureRecognizer) {
+        guard let imageView = sender.view as? UIImageView else { return }
+        let index = imageView.tag
+        guard index >= 0 && index < data.count else { return }
+        
+        let selectedTeacher = data[index]
+        
+        print(selectedTeacher)
+        
+        let waitingDetailView = WaitingDetails(teacher: selectedTeacher, allData: data)
+        let host = UIHostingController(rootView: waitingDetailView)
+        
+        if let navController = self.navigationController {
+            navController.pushViewController(host, animated: true)
         }
     }
 
@@ -97,9 +151,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             
             // Configure item appearance for both normal and selected states
             let itemAppearance = UITabBarItemAppearance()
-            itemAppearance.normal.iconColor = UIColor.gray // Color of unselected tab bar item images
-            itemAppearance.selected.iconColor = UIColor.white // Color of selected tab bar item images
-            itemAppearance.normal.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.gray] // Color of unselected tab bar item titles
+            itemAppearance.normal.iconColor = UIColor.gray
+            itemAppearance.selected.iconColor = UIColor.white
+            itemAppearance.normal.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.gray]
             itemAppearance.selected.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
 
             appearance.stackedLayoutAppearance = itemAppearance
@@ -136,23 +190,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            let selectedTeacher = data[indexPath.row]
-            
-            print(selectedTeacher)
-            
-            let waitingDetailView = WaitingDetails(teacher: selectedTeacher, allData: data)
-            let host = UIHostingController(rootView: waitingDetailView)
-            
-            // Ensure we're pushing onto the navigation stack correctly
-            if let navController = self.navigationController {
-                navController.pushViewController(host, animated: true)
-            } else {
-                // Present modally if navigation controller is not available
-                let modalNavController = UINavigationController(rootViewController: host)
-                modalNavController.modalPresentationStyle = .formSheet
-                self.present(modalNavController, animated: true, completion: nil)
-            }
+        let selectedTeacher = data[indexPath.row]
+        
+        print(selectedTeacher)
+        
+        let waitingDetailView = WaitingDetails(teacher: selectedTeacher, allData: data)
+        let host = UIHostingController(rootView: waitingDetailView)
+        
+        if let navController = self.navigationController {
+            navController.pushViewController(host, animated: true)
         }
+    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100

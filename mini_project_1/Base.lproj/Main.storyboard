@@ -318,7 +318,7 @@ Unicode: U+003E, UTF-8: 3E  &gt;  </string>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qSL-MU-gA4">
+                                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qSL-MU-gA4" userLabel="rankingScrollVIew">
                                                 <rect key="frame" x="0.0" y="652" width="413" height="128"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4kf-Ue-cdT">
@@ -379,7 +379,7 @@ Unicode: U+003E, UTF-8: 3E  &gt;  </string>
                                                         </constraints>
                                                     </imageView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="Qmy-th-F0K">
-                                                        <rect key="frame" x="50" y="4.6666666666667425" width="70" height="40.666666666666671"/>
+                                                        <rect key="frame" x="50" y="4.6666666666667425" width="70" height="40.666666666666664"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lesson" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xjJ-XJ-TpO">
                                                                 <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="20.333333333333332"/>
@@ -456,6 +456,7 @@ Unicode: U+003E, UTF-8: 3E  &gt;  </string>
                     <connections>
                         <outlet property="lessonDraw" destination="30L-US-hSd" id="fz4-se-h0r"/>
                         <outlet property="mainScrollView" destination="tHM-mf-MVk" id="81u-vk-6tu"/>
+                        <outlet property="rankingScrollView" destination="qSL-MU-gA4" id="Mks-Uh-mcl"/>
                         <outlet property="tableView" destination="djH-LT-whF" id="V82-CH-GEH"/>
                     </connections>
                 </viewController>

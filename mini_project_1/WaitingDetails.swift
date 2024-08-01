@@ -20,7 +20,7 @@ struct WaitingDetails: View {
                 VStack {
                     HeaderView(teacher: teacher)
                     TeacherDetailView(teacher: teacher)
-                    ActionButtons()
+                    ActionButtons(teacher: teacher)
                     TutorProfile()
                     FeatureHobbies()
                     WorkExpView()
@@ -105,7 +105,7 @@ struct CardView: View {
             Spacer()
         }
         .frame(width: 100, height: 200)
-        .background(Color.customColor) // Ensure 'customColor' is defined in your extension or use a default color
+        .background(Color.recommendBg)
         .cornerRadius(5)
     }
 }
@@ -152,9 +152,13 @@ struct HeaderView: View {
     var teacher: Teacher
     var body: some View {
         HStack(spacing: 150) {
-            HStack(spacing:15){
+            HStack(spacing:5){
+                Image(teacher.imageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit) // Ensure the image maintains its aspect ratio
+                    .frame(width: 40, height: 40) // Set the frame to the desired size
+                    .clipShape(Circle()) // Clip to circular shape
                 Image(systemName: "pencil.circle.fill")
-                    .padding(.leading, 20)
                     .foregroundStyle(.white)
                     .frame(width: 20)
                 Text(teacher.title)
@@ -163,6 +167,7 @@ struct HeaderView: View {
                 Text("(Age: 35)")
                     .font(.caption)
                     .opacity(0.25)
+                    .foregroundStyle(.white)
             }
             
             
@@ -563,16 +568,45 @@ struct DetailRow: View {
     }
 }
 
+struct StatusButton: View {
+    var title: String
+    var backgroundColor: Color
+    var textColor: Color
+    var horizontalPadding: CGFloat
+
+    var body: some View {
+        Button(action: {
+        }) {
+            Text(title)
+                .padding(.vertical, 15)
+                .padding(.horizontal, horizontalPadding)
+                .background(backgroundColor)
+                .foregroundColor(textColor)
+                .bold()
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+    }
+}
+
 struct ActionButtons: View {
+    var teacher: Teacher
     var body: some View {
         VStack {
-            Button("Offline") { }
-                .padding(.vertical, 15)
-                .padding(.horizontal, 170)
-                .background(Color.gray)
-                .foregroundStyle(.white.opacity(0.5))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-            
+            if teacher.status == "busy" {
+                StatusButton(
+                    title: "Busy",
+                    backgroundColor: Color.busyBg,
+                    textColor: .white,
+                    horizontalPadding: 176
+                )
+            } else {
+                StatusButton(
+                    title: "Offline",
+                    backgroundColor: Color.gray,
+                    textColor: .white.opacity(0.5),
+                    horizontalPadding: 170
+                )
+            }
             HStack {
                 Image(systemName: "calendar")
                     .foregroundStyle(.black)
@@ -640,12 +674,15 @@ struct FooterButton: View {
     }
 }
 extension Color {
-    static let customColor = Color(red: 48/255, green: 44/255, blue: 44/255)}
+    static let recommendBg = Color(red: 48/255, green: 44/255, blue: 44/255)
+    static let busyBg = Color(red: 256 / 255, green: 52 / 255, blue: 92 / 255)
+}
     
 
+
 #Preview {
-    WaitingDetails(teacher: Teacher(title: "John Doe", imageName: "bini"), allData: [
-        Teacher(title: "John Doe", imageName: "bini"),
-        Teacher(title: "Jane Smith", imageName: "jane"),
+    WaitingDetails(teacher: Teacher(title: "John Doe", imageName: "bini", status: "busy"), allData: [
+        Teacher(title: "John Doe", imageName: "bini", status: "busy"),
+        Teacher(title: "Dog Smith", imageName: "dog", status: "offline"),
     ])
 }
