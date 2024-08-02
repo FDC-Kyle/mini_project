@@ -8,9 +8,14 @@
 import SwiftUI
 
 struct WaitingDetails: View {
+    @StateObject private var teacherDetailModel = TeacherDetailModel() // Observed object
+    @State private var teacherDetails: [TeacherDetail] = []
+    @State private var error: Error?
+    
     let data: [CGFloat] = [0.4, 0.6, 0.8, 3, 0.9]
     var teacher: Teacher
     var allData: [Teacher]
+
     var body: some View {
         ZStack {
             Color.black
@@ -26,28 +31,49 @@ struct WaitingDetails: View {
                     WorkExpView()
                     BarChartView(data: data)
                     HorizontalScrollViewList(allData: allData)
+                    
+                    if !teacherDetailModel.teacherDetails.isEmpty {
+                        Text("Teacher Details")
+                            .foregroundStyle(.white)
+                        ForEach(teacherDetailModel.teacherDetails) { detail in
+                            Text(detail.nameEng) // Display teacher details
+                                .foregroundStyle(.white)
+                        }
+                    }
+                    
+                    if let error = teacherDetailModel.error {
+                        Text("Error: \(error.localizedDescription)")
+                            .foregroundColor(.red)
+                    }
                 }
                 .padding()
             }
         }
-        
-       
-    }
-    init(teacher: Teacher, allData: [Teacher]) {
-            self.teacher = teacher
-            self.allData = allData
-        print(self.allData)
+        .onAppear {
+            teacherDetailModel.fetchTeacherDetails()
         }
-}
+        .onReceive(teacherDetailModel.$teacherDetails) { details in
+            teacherDetails = details
+        }
+        .onReceive(teacherDetailModel.$error) { err in
+            error = err
+        }
+    }
 
+    init(teacher: Teacher, allData: [Teacher]) {
+        self.teacher = teacher
+        self.allData = allData
+        print("Teacher Data: \(self.allData)")
+    }
+}
 
 struct CardView: View {
     let title: String
-    let imageName: String
+    let imageMain: String
     
     var body: some View {
         VStack(alignment: .leading) {
-            Image(imageName)
+            Image(imageMain)
                 .resizable()
                 .frame(width: 100, height: 100)
                 .aspectRatio(contentMode: .fill)
@@ -150,33 +176,67 @@ struct BarChartView: View {
 
 struct HeaderView: View {
     var teacher: Teacher
+
     var body: some View {
-        HStack(spacing: 150) {
-            HStack(spacing:5){
-                Image(teacher.imageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit) // Ensure the image maintains its aspect ratio
-                    .frame(width: 40, height: 40) // Set the frame to the desired size
-                    .clipShape(Circle()) // Clip to circular shape
+        HStack(alignment: .center, spacing: 100){
+            
+            HStack(spacing: 5) {
+                if let imageURL = teacher.imageMain, let url = URL(string: imageURL) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 40, height: 40) // Set the frame to the desired size
+                                .clipShape(Circle()) // Clip to circular shape
+                        case .failure(_):
+                            Image("placeholderImage") // Replace with your actual placeholder image name
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 40, height: 40)
+                                .clipShape(Circle())
+                        case .empty:
+                            ProgressView()
+                                .frame(width: 40, height: 40)
+                        @unknown default:
+                            Image("placeholderImage") // Fallback in case of unknown phase
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 40, height: 40)
+                                .clipShape(Circle())
+                        }
+                    }
+                } else {
+                    Image("placeholderImage") // Fallback when imageURL is nil or invalid
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 40, height: 40)
+                        .clipShape(Circle())
+                }
+                
                 Image(systemName: "pencil.circle.fill")
                     .foregroundStyle(.white)
                     .frame(width: 20)
-                Text(teacher.title)
+                
+                Text(teacher.nameEng)
                     .bold()
                     .foregroundStyle(.white)
+                
                 Text("(Age: 35)")
                     .font(.caption)
                     .opacity(0.25)
                     .foregroundStyle(.white)
+               
             }
+
+            
             
             
             Text("...")
-                .bold()
+                .font(.caption)
                 .foregroundStyle(.white)
         }
-
-        
     }
 }
 
@@ -193,7 +253,7 @@ struct HorizontalScrollViewList: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 5) {
                     ForEach(allData) { teacher in
-                        CardView(title: teacher.title, imageName: teacher.imageName)
+                        CardView(title: teacher.nameEng, imageMain: teacher.imageMain ?? "placeholder")
                     }
                 }
             }
@@ -487,12 +547,45 @@ struct TeacherDetailView: View {
     var teacher: Teacher
     var body: some View {
         HStack {
-            Image(teacher.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 220, height: 380)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .padding(.leading, 30)
+            if let imageURL = teacher.imageMain, let url = URL(string: imageURL) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 220, height: 380)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .padding(.leading, 30)
+                    case .failure(_):
+                        Image("placeholder") // Replace with your actual placeholder image name
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 220, height: 380)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .padding(.leading, 30)
+                    case .empty:
+                        ProgressView()
+                            .frame(width: 220, height: 380)
+                            .padding(.leading, 30)
+                    @unknown default:
+                        Image("placeholder") // Fallback in case of unknown phase
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 220, height: 380)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .padding(.leading, 30)
+                    }
+                }
+            } else {
+                // Handle the case where imageURL is nil or invalid
+                Image("placeholder") // Replace with your actual placeholder image name
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 220, height: 380)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(.leading, 30)
+            }
             
             VStack(alignment: .leading, spacing: 10) {
                 flag()
@@ -592,7 +685,7 @@ struct ActionButtons: View {
     var teacher: Teacher
     var body: some View {
         VStack {
-            if teacher.status == "busy" {
+            if teacher.status == 1 {
                 StatusButton(
                     title: "Busy",
                     backgroundColor: Color.busyBg,
@@ -681,8 +774,9 @@ extension Color {
 
 
 #Preview {
-    WaitingDetails(teacher: Teacher(title: "John Doe", imageName: "bini", status: "busy"), allData: [
-        Teacher(title: "John Doe", imageName: "bini", status: "busy"),
-        Teacher(title: "Dog Smith", imageName: "dog", status: "offline"),
-    ])
+    WaitingDetails(teacher: Teacher(id: 12333, nameEng: "John Doe", status: 1, imageMain: "bini"), allData: [
+        Teacher(id: 12334, nameEng: "John Doe", status: 2, imageMain: "bini"),
+        Teacher(id: 12335, nameEng: "Dog Smith", status: 1, imageMain: "dog"),
+       ])
 }
+                  

@@ -7,61 +7,84 @@
 
 import UIKit
 import SwiftUI
+import Combine
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
+    private var viewModel = TeacherViewModel()
+    private var detailsViewModel = TeacherDetailModel()
+    private var cancellables = Set<AnyCancellable>()
+    
     @IBOutlet weak var rankingScrollView: UIScrollView!
     @IBOutlet weak var lessonDraw: UIStackView!
     @IBOutlet weak var mainScrollView: UIScrollView!
     @IBOutlet weak var tableView: UITableView!
-    let data: [Teacher] = [
-        Teacher(title:"TeacherOne", imageName: "teacher", status: "busy"),
-        Teacher(title:"TeacherCat", imageName: "cat", status: "offline"),
-        Teacher(title:"TeacherDOG", imageName: "dog", status: "busy"),
-        Teacher(title:"TeacherBini", imageName: "bini_2", status: "busy"),
-        Teacher(title:"TeacherOne", imageName: "teacher", status: "offline"),
-        Teacher(title:"TeacherOne", imageName: "teacher", status: "offline")
-    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
-   
+
         guard tableView != nil else {
             fatalError("TableView not connected or initialized.")
         }
+
         tableView.dataSource = self
         tableView.delegate = self
         mainScrollView.delegate = self
-        
+
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.backgroundColor = .clear
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        
+
         lessonDraw.layer.cornerRadius = lessonDraw.frame.height / 2
-                lessonDraw.layer.masksToBounds = true
+        lessonDraw.layer.masksToBounds = true
+
+        viewModel.$teacherlist
+            .sink { [weak self] _ in
+                self?.tableView.reloadData()
+                self?.populateRankingScrollView() // Call after data is fetched
+            }
+            .store(in: &cancellables)
+
+        detailsViewModel.fetchTeacherDetails()
+        // Fetch data
+        viewModel.fetchTeacher()
         
-        populateRankingScrollView()
+        // Call APIHelper
+        let apiHelper = APIHelper()
+        apiHelper.request { result in
+            switch result {
+            case .success(let json):
+                print("Received JSON: \(json)")
+                // Handle the JSON data here, e.g., update UI on the main thread
+                DispatchQueue.main.async {
+                    // Update your UI or view model here
+                }
+            case .failure(let error):
+                print("Failed with error: \(error)")
+                // Handle the error here, e.g., show an alert
+            }
+        }
     }
+    
+    
+
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         populateRankingScrollView() // Recalculate sizes and positions on layout changes
     }
 
-    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-            if scrollView == mainScrollView {
-                let xOffset = scrollView.contentOffset.x + 280
-                let yOffset = scrollView.contentOffset.y + 715
-                lessonDraw.frame.origin = CGPoint(x: xOffset, y: yOffset)
-            }
+        if scrollView == mainScrollView {
+            let xOffset = scrollView.contentOffset.x + 280
+            let yOffset = scrollView.contentOffset.y + 715
+            lessonDraw.frame.origin = CGPoint(x: xOffset, y: yOffset)
         }
+    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // Check if tab bar controller has been presented before
         if !UserDefaults.standard.bool(forKey: "hasPresentedTabBar") {
             presentTabBarController()
             UserDefaults.standard.set(true, forKey: "hasPresentedTabBar")
@@ -69,17 +92,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func populateRankingScrollView() {
-        // Clear any existing subviews
         rankingScrollView.subviews.forEach { $0.removeFromSuperview() }
-        
+//        print("teacherCount:\(viewModel.teacherlist.teachers.count)")
         let padding: CGFloat = 10
         let imageSize: CGFloat = 100
-        let totalWidth = CGFloat(data.count) * (imageSize + padding) + padding
-        
+        let totalWidth = CGFloat(viewModel.teacherlist.teachers.count) * (imageSize + padding) + padding
         rankingScrollView.contentSize = CGSize(width: totalWidth, height: rankingScrollView.frame.height)
         
-        for (index, teacher) in data.enumerated() {
-            let imageView = UIImageView(image: UIImage(named: teacher.imageName))
+        for (index, teacher) in viewModel.teacherlist.teachers.enumerated() {
+//            print("Teacher image URL: \(teacher.imageMain)")
+//            print("Teacher image URL:")
+            let imageView = UIImageView()
             imageView.frame = CGRect(x: CGFloat(index) * (imageSize + padding) + padding,
                                      y: 0,
                                      width: imageSize,
@@ -87,37 +110,44 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             imageView.contentMode = .scaleAspectFill
             imageView.clipsToBounds = true
             imageView.layer.cornerRadius = 5
-            imageView.isUserInteractionEnabled = true // Enable user interaction
+            imageView.isUserInteractionEnabled = true
             
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageTap(_:)))
-            imageView.addGestureRecognizer(tapGesture)
-            imageView.tag = index
+            // Load image from URL
+            if let imageURLString = teacher.imageMain, let imageURL = URL(string: imageURLString) {
+                imageView.loadImage(from: imageURL, placeholder: UIImage(named: "placeholder")) // Use a placeholder if needed
+            } else {
+                imageView.image = UIImage(named: "placeholder") // Fallback image if URL is invalid
+            }
+            
+            // Uncomment if you want to add gesture recognizers
+            // let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageTap(_:)))
+            // imageView.addGestureRecognizer(tapGesture)
+            // imageView.tag = index
             
             rankingScrollView.addSubview(imageView)
         }
     }
     
-    @objc func handleImageTap(_ sender: UITapGestureRecognizer) {
-        guard let imageView = sender.view as? UIImageView else { return }
-        let index = imageView.tag
-        guard index >= 0 && index < data.count else { return }
-        
-        let selectedTeacher = data[index]
-        
-        print(selectedTeacher)
-        
-        let waitingDetailView = WaitingDetails(teacher: selectedTeacher, allData: data)
-        let host = UIHostingController(rootView: waitingDetailView)
-        
-        if let navController = self.navigationController {
-            navController.pushViewController(host, animated: true)
-        }
-    }
+//    @objc func handleImageTap(_ sender: UITapGestureRecognizer) {
+//        guard let imageView = sender.view as? UIImageView else { return }
+//        let index = imageView.tag
+//        guard index >= 0 && index < viewModel.teacherlist.teachers.count else { return }
+//
+//        let selectedTeacher = viewModel.teacherlist.teachers[index]
+//
+//        print(selectedTeacher)
+//        
+//        let waitingDetailView = WaitingDetails(teacher: selectedTeacher, allData: viewModel.teacherlist.teachers)
+//        let host = UIHostingController(rootView: waitingDetailView)
+//        
+//        if let navController = self.navigationController {
+//            navController.pushViewController(host, animated: true)
+//        }
+//    }
 
     func presentTabBarController() {
         let tabBarVc = UITabBarController()
-
-        // Create instances of your view controllers
+        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         
         guard let vc = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController else {
@@ -125,11 +155,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             return
         }
         
-        // Wrap the ViewController in a UINavigationController
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house")?.withRenderingMode(.alwaysTemplate), tag: 0)
 
-        // Create other view controllers
         let vc1 = FirstViewController()
         vc1.tabBarItem = UITabBarItem(title: "Favorite tutor", image: UIImage(systemName: "heart")?.withRenderingMode(.alwaysTemplate), tag: 1)
 
@@ -144,12 +172,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
         tabBarVc.viewControllers = [navigationController, vc1, vc2, vc3, vc4]
 
-        // Customize the tab bar appearance
         if #available(iOS 13.0, *) {
             let appearance = UITabBarAppearance()
-            appearance.backgroundColor = UIColor.black // Tab bar background color
+            appearance.backgroundColor = UIColor.black
             
-            // Configure item appearance for both normal and selected states
             let itemAppearance = UITabBarItemAppearance()
             itemAppearance.normal.iconColor = UIColor.gray
             itemAppearance.selected.iconColor = UIColor.white
@@ -163,58 +189,106 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             tabBarVc.tabBar.standardAppearance = appearance
             tabBarVc.tabBar.scrollEdgeAppearance = appearance
         } else {
-            // Fallback on earlier versions
             tabBarVc.tabBar.barTintColor = UIColor.black
             tabBarVc.tabBar.tintColor = UIColor.white
             tabBarVc.tabBar.unselectedItemTintColor = UIColor.gray
         }
 
-        // Present the tab bar controller
         tabBarVc.modalPresentationStyle = .fullScreen
         present(tabBarVc, animated: false)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.count
+        return viewModel.teacherlist.teachers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let teacher = data[indexPath.row]
+        let teacher = viewModel.teacherlist.teachers[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomTableViewCell
-        cell.teacherName.text = teacher.title
-        cell.iconImageView.image = UIImage(named: teacher.imageName)
+        
+        cell.teacherName.text = teacher.nameEng
+        
+        if let imageURLString = teacher.imageMain, let imageURL = URL(string: imageURLString) {
+            cell.iconImageView.loadImage(from: imageURL, placeholder: UIImage(named: "placeholder"))
+        } else {
+            cell.iconImageView.image = UIImage(named: "placeholder") // Fallback image
+        }
+        
         cell.selectionStyle = .none
         return cell
-        
-        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedTeacher = data[indexPath.row]
+        let selectedTeacher = viewModel.teacherlist.teachers[indexPath.row]
         
-        print(selectedTeacher)
-        
-        let waitingDetailView = WaitingDetails(teacher: selectedTeacher, allData: data)
-        let host = UIHostingController(rootView: waitingDetailView)
-        
-        if let navController = self.navigationController {
-            navController.pushViewController(host, animated: true)
+        // Initialize APIHelper and make the request
+        let apiHelper = APIHelper()
+        apiHelper.request { [weak self] result in
+            switch result {
+            case .success(let json):
+                print("Received JSON: \(json)")
+                
+                // Parse the JSON data into a suitable model if necessary
+                // Here you should parse the JSON data into your model, e.g., TeacherDetailList
+                // For simplicity, let's assume you have a method to parse this JSON into a model
+                do {
+                    let data = try JSONSerialization.data(withJSONObject: json, options: [])
+                    let decodedDetails = try JSONDecoder().decode(TeacherDetailList.self, from: data)
+                    
+                    DispatchQueue.main.async {
+                        // Create the WaitingDetails view with the fetched data
+                        let waitingDetailView = WaitingDetails(
+                            teacher: selectedTeacher,
+                            allData: self?.viewModel.teacherlist.teachers ?? []
+                        )
+                        let host = UIHostingController(rootView: waitingDetailView)
+                        
+                        if let navController = self?.navigationController {
+                            navController.pushViewController(host, animated: true)
+                        }
+                    }
+                } catch {
+                    print("Error parsing JSON: \(error)")
+                    DispatchQueue.main.async {
+                        // Handle the error, e.g., show an alert
+                    }
+                }
+                
+            case .failure(let error):
+                print("Failed with error: \(error)")
+                DispatchQueue.main.async {
+                    // Handle the error, e.g., show an alert
+                }
+            }
         }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
     }
-    
-
-//    @IBAction func navigateButton(_ sender: Any) {
-//        
-//        let vc = UIHostingController(rootView: WaitingDetails())
-//        
-//        self.present(vc, animated: true)
-//    }
-    
 }
+
+extension UIImageView {
+    func loadImage(from url: URL, placeholder: UIImage? = nil) {
+        // Set placeholder image
+        self.image = placeholder
+        
+        // Start a background task to fetch the image
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil, let image = UIImage(data: data) else {
+                print("Failed to load image from URL: \(url), error: \(String(describing: error))")
+                return
+            }
+            
+            // Update UI on the main thread
+            DispatchQueue.main.async {
+                self.image = image
+            }
+        }
+        task.resume()
+    }
+}
+
 
 class FirstViewController: UIViewController {
     override func viewDidLoad() {

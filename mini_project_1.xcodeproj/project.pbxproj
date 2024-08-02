@@ -15,8 +15,10 @@
 		806166372C57654200C30492 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 806166362C57654200C30492 /* Base */; };
 		806166392C57654400C30492 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 806166382C57654400C30492 /* Assets.xcassets */; };
 		8061663C2C57654400C30492 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 8061663B2C57654400C30492 /* Base */; };
+		80BCBE6F2C5B910B000ADB56 /* TeacherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BCBE6E2C5B910B000ADB56 /* TeacherViewModel.swift */; };
 		80E614602C58A75F00B930A5 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E6145F2C58A75F00B930A5 /* CustomTableViewCell.swift */; };
 		80E614622C58B49E00B930A5 /* TeacherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E614612C58B49E00B930A5 /* TeacherModel.swift */; };
+		80EDFB8E2C5C90C700992C54 /* TeacherDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EDFB8D2C5C90C700992C54 /* TeacherDetailModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,8 +32,10 @@
 		806166382C57654400C30492 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8061663B2C57654400C30492 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8061663D2C57654400C30492 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		80BCBE6E2C5B910B000ADB56 /* TeacherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherViewModel.swift; sourceTree = "<group>"; };
 		80E6145F2C58A75F00B930A5 /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
 		80E614612C58B49E00B930A5 /* TeacherModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherModel.swift; sourceTree = "<group>"; };
+		80EDFB8D2C5C90C700992C54 /* TeacherDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherDetailModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,12 +73,14 @@
 				806166332C57654200C30492 /* ViewController.swift */,
 				806166352C57654200C30492 /* Main.storyboard */,
 				805D622D2C5794E600DCF657 /* WaitingDetails.swift */,
+				80EDFB8D2C5C90C700992C54 /* TeacherDetailModel.swift */,
 				80E614612C58B49E00B930A5 /* TeacherModel.swift */,
 				806166382C57654400C30492 /* Assets.xcassets */,
 				8061663A2C57654400C30492 /* LaunchScreen.storyboard */,
 				8061663D2C57654400C30492 /* Info.plist */,
 				805D622B2C578C5A00DCF657 /* CustomTabBarController.swift */,
 				80E6145F2C58A75F00B930A5 /* CustomTableViewCell.swift */,
+				80BCBE6E2C5B910B000ADB56 /* TeacherViewModel.swift */,
 			);
 			path = mini_project_1;
 			sourceTree = "<group>";
@@ -151,6 +157,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				80E614622C58B49E00B930A5 /* TeacherModel.swift in Sources */,
+				80EDFB8E2C5C90C700992C54 /* TeacherDetailModel.swift in Sources */,
+				80BCBE6F2C5B910B000ADB56 /* TeacherViewModel.swift in Sources */,
 				80E614602C58A75F00B930A5 /* CustomTableViewCell.swift in Sources */,
 				805D622E2C5794E600DCF657 /* WaitingDetails.swift in Sources */,
 				806166342C57654200C30492 /* ViewController.swift in Sources */,
