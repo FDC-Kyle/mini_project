@@ -69,16 +69,31 @@ struct WaitingDetails: View {
 
 struct CardView: View {
     let title: String
-    let imageMain: String
-    
+    let imageMain: String // This should be a URL string
+
     var body: some View {
         VStack(alignment: .leading) {
-            Image(imageMain)
-                .resizable()
-                .frame(width: 100, height: 100)
-                .aspectRatio(contentMode: .fill)
-                .background(Color.blue)
-                
+            // Use AsyncImage to load the image from the URL
+            AsyncImage(url: URL(string: imageMain)) { phase in
+                switch phase {
+                case .empty:
+                    ProgressView() // Placeholder while loading
+                case .success(let image):
+                    image
+                        .resizable()
+                        .frame(width: 100, height: 100)
+                        .aspectRatio(contentMode: .fill)
+                case .failure:
+                    Image(systemName: "photo") // Placeholder if there is an error
+                        .resizable()
+                        .frame(width: 100, height: 100)
+                        .background(Color.gray)
+                @unknown default:
+                    EmptyView()
+                }
+            }
+            .background(Color.blue)
+            
             VStack(alignment: .leading) {
                 Text(title)
                     .font(.subheadline)
@@ -135,7 +150,6 @@ struct CardView: View {
         .cornerRadius(5)
     }
 }
-
 struct BarChartView: View {
     let data: [CGFloat]
     
