@@ -1,1 +1,1 @@
-[![My Skills](https://skillicons.dev/icons?i=js,html,css,docker,apple)](https://skillicons.dev)
+[![My Skills](https://skillicons.dev/icons?i=js,html,css,docker,apple,git,github,jquery,linkedin,mysql,php,postgres,postman,pycharm,sqlite,stackoverflow,vscode,swift,eclipse,xcode)](https://skillicons.dev)
