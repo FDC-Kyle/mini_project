@@ -1,6 +1,6 @@
 <h2 align="left">My Skills</h2>
 
-<p align="right">
+<p align="left">
   <a href="https://skillicons.dev">
     <img src="https://skillicons.dev/icons?i=js,html,css,mysql,php,postgres,docker,git,github,jquery" />
     <br />
